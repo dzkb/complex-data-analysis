@@ -65,4 +65,6 @@ if __name__ == "__main__":
         ]
     )
 
-    stations_dataframe.to_csv(args.output_file, header=None)
+    columns = ["station", "latitude", "longitude"]
+    stations_dataframe.columns = columns
+    stations_dataframe.to_csv(args.output_file, index=False)
