@@ -7,10 +7,10 @@ import requests
 from tqdm import tqdm
 
 OSM_NOMINATIM_URL = (
-    "https://nominatim.openstreetmap.org/search?q={}&email={}&format=json"
+    "https://nominatim.openstreetmap.org/search?q={}&email={}&format=json&countrycodes=pl,de,cz,sk,ua,by,ru"
 )
 DUMMY_COORDINATES = float("inf"), float("inf")
-SLEEP_SECONDS = 1
+SLEEP_SECONDS = 0.9
 
 parser = argparse.ArgumentParser(
     description="Fetch location data of train stations from OpenStreetMap"
@@ -30,8 +30,12 @@ parser.add_argument(
 def get_valid_train_station_coordinates(places_data: List) -> Tuple[float, float]:
     coordinates = DUMMY_COORDINATES
     for place in places_data:
-        coordinates = (place["lat"], place["lon"])
+        # Assume the first place is the best match
+        if coordinates == DUMMY_COORDINATES:
+            coordinates = (place["lat"], place["lon"])
+        # ...unless there is a railway place
         if place["class"] == "railway":
+            coordinates = (place["lat"], place["lon"])
             break
     return coordinates
 
